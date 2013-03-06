@@ -84,9 +84,9 @@ public class Player : MonoBehaviour {
 		}
 	}
 	
-	void FixedUpdate () {
+	void FixedUpdate () {		
 		float movementX = Input.GetAxis("Horizontal")*playerSpeed*speedMultiplier*tempInputChange; 	//get input with default keys
-		//move horizontally
+		//move horizontally		
 		rigidbody.velocity = new Vector3(movementX,rigidbody.velocity.y,rigidbody.velocity.z);
 		//Handle Double jump
 		if(fsm.getCurrentState().getID().Equals(PlayerStates.JUMPING)){	
