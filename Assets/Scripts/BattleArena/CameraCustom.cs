@@ -4,9 +4,9 @@ using System.Collections;
 
 public class CameraCustom : MonoBehaviour {
 	
-	public float margin = 3.0f; // Speed of zoom out (Higher = slower zoom out)
+	public float margin = 1.0f; // Speed of zoom out (Higher = slower zoom out)
 	
-	private float initialDistance = 0.0f;
+	private float initialDistance;
 	public float maxDistance = 20.0f;
 	
 	private Transform tCharacter1; // Transform player 1
@@ -33,22 +33,7 @@ public class CameraCustom : MonoBehaviour {
 	{
 		Vector3 tempPosition = transform.position;
 		
-		calculateScreen (tCharacter1, tCharacter2);
-		float distancePlayers = xRight - xLeft;
-		
-		if (distancePlayers > initialDistance
-			&& distancePlayers<maxDistance){ 	// If the distance between players is greater than the initial, 
-							 					// adjust zoom of the camera.			
-			this.camera.orthographicSize = (distancePlayers + margin) / (2*this.camera.aspect);
-	    }
-	    
-		// Center the camera
 		float cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
-	    tempPosition.x = Mathf.Clamp(	(xRight + xLeft)/2,
-										-sceneManager.getLevelLenght()/2+cameraHalfWidth,
-										sceneManager.getLevelLenght()/2-cameraHalfWidth);
-		
-		transform.position = tempPosition;		
 		Vector3 posC1 = tCharacter1.position;
 		posC1 = new Vector3(Mathf.Clamp(posC1.x,transform.position.x-cameraHalfWidth+0.5f,transform.position.x+cameraHalfWidth-0.5f),
 							posC1.y,
@@ -59,7 +44,26 @@ public class CameraCustom : MonoBehaviour {
 		posC2 = new Vector3(Mathf.Clamp(posC2.x,transform.position.x-cameraHalfWidth+0.5f,transform.position.x+cameraHalfWidth-0.5f),
 							posC2.y,
 							posC2.z);
-		tCharacter2.position = posC2;		
+		tCharacter2.position = posC2;
+		
+		calculateScreen (tCharacter1, tCharacter2);
+		float distancePlayers = xRight - xLeft;
+		
+		if (distancePlayers > initialDistance
+			&& distancePlayers < maxDistance){ 	// If the distance between players is greater than the initial, 
+							 					// adjust zoom of the camera.			
+			this.camera.orthographicSize = (distancePlayers + margin) / (2*this.camera.aspect);
+	    }
+		cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
+		// Center the camera
+		float 	leftLimit = -sceneManager.getLevelLenght()/2+cameraHalfWidth,
+				rightLimit = sceneManager.getLevelLenght()/2-cameraHalfWidth;
+		
+		tempPosition.x = Mathf.Clamp(	(xRight + xLeft)/2,
+										leftLimit,
+										rightLimit);
+		
+		transform.position = tempPosition;
 	}
 	
 	void calculateScreen(Transform p1, Transform p2)
