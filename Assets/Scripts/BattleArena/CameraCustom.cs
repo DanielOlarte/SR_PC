@@ -45,7 +45,7 @@ public class CameraCustom : MonoBehaviour {
 		calculateScreen (tCharacter1, tCharacter2);
 		float 	horizontalDistancePlayers = xRight - xLeft,
 				verticalDistancePlayers = yTop - yBottom;
-		print (verticalDistancePlayers+"  "+this.camera.orthographicSize+"  "+(2*verticalDistancePlayers*this.camera.aspect - margin));
+		
 		if( horizontalDistancePlayers > initialHorizontalDistance 
 			&& horizontalDistancePlayers < maxDistance){ 			// If the distance between players is greater than the initial, 
 							 										// adjust zoom of the camera.			
@@ -64,7 +64,9 @@ public class CameraCustom : MonoBehaviour {
 										leftLimit,
 										rightLimit);
 		
-		tempPosition.y = (yTop+yBottom)/2;
+		tempPosition.y = Mathf.Clamp(	(yTop+yBottom)/2,
+										float.MinValue,
+										yBottom+this.camera.orthographicSize-1.0f);
 		
 		transform.position = tempPosition;
 	}
