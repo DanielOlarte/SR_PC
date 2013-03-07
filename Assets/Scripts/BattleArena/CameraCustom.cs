@@ -4,9 +4,10 @@ using System.Collections;
 
 public class CameraCustom : MonoBehaviour {
 	
-	public float margin = 1.0f; // Speed of zoom out (Higher = slower zoom out)
+	public float margin = 1.5f; // Speed of zoom out (Higher = slower zoom out)
 	
-	private float initialDistance;
+	private float initialHorizontalDistance;
+	private float initialVerticalDistance;
 	public float maxDistance = 20.0f;
 	
 	private Transform tCharacter1; // Transform player 1
@@ -16,6 +17,8 @@ public class CameraCustom : MonoBehaviour {
 	
 	private float xLeft; // Coordinate X of left screen
 	private float xRight; // Coordinate X of right screen
+	private float yBottom;
+	private float yTop;
 
 	// Use this for initialization
 	void Start () 
@@ -26,7 +29,8 @@ public class CameraCustom : MonoBehaviour {
 	    tCharacter2 = GameObject.Find("Player2").transform;
 		
 		calculateScreen(tCharacter1, tCharacter2);
-		initialDistance = (2*this.camera.orthographicSize*this.camera.aspect) - margin;
+		initialHorizontalDistance = (2*this.camera.orthographicSize*this.camera.aspect) - margin;
+		initialVerticalDistance = this.camera.orthographicSize;
 	}
 	
 	void Update ()
@@ -34,26 +38,23 @@ public class CameraCustom : MonoBehaviour {
 		Vector3 tempPosition = transform.position;
 		
 		float cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
-		Vector3 posC1 = tCharacter1.position;
-		posC1 = new Vector3(Mathf.Clamp(posC1.x,transform.position.x-cameraHalfWidth+0.5f,transform.position.x+cameraHalfWidth-0.5f),
-							posC1.y,
-							posC1.z);
-		tCharacter1.position = posC1;
 		
-		Vector3 posC2 = tCharacter2.position;
-		posC2 = new Vector3(Mathf.Clamp(posC2.x,transform.position.x-cameraHalfWidth+0.5f,transform.position.x+cameraHalfWidth-0.5f),
-							posC2.y,
-							posC2.z);
-		tCharacter2.position = posC2;
+		restrictPlayersHorizontal(cameraHalfWidth);
+		//restrictPlayersVertical();
 		
 		calculateScreen (tCharacter1, tCharacter2);
-		float distancePlayers = xRight - xLeft;
-		
-		if (distancePlayers > initialDistance
-			&& distancePlayers < maxDistance){ 	// If the distance between players is greater than the initial, 
-							 					// adjust zoom of the camera.			
-			this.camera.orthographicSize = (distancePlayers + margin) / (2*this.camera.aspect);
+		float 	horizontalDistancePlayers = xRight - xLeft,
+				verticalDistancePlayers = yTop - yBottom;
+		print (verticalDistancePlayers+"  "+this.camera.orthographicSize+"  "+(2*verticalDistancePlayers*this.camera.aspect - margin));
+		if( horizontalDistancePlayers > initialHorizontalDistance 
+			&& horizontalDistancePlayers < maxDistance){ 			// If the distance between players is greater than the initial, 
+							 										// adjust zoom of the camera.			
+			this.camera.orthographicSize = (horizontalDistancePlayers + margin) / (2*this.camera.aspect);
 	    }
+		else if(verticalDistancePlayers > initialVerticalDistance
+				&& 2*verticalDistancePlayers*this.camera.aspect - margin < maxDistance){
+			this.camera.orthographicSize = verticalDistancePlayers;
+		}
 		cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
 		// Center the camera
 		float 	leftLimit = -sceneManager.getLevelLenght()/2+cameraHalfWidth,
@@ -63,7 +64,38 @@ public class CameraCustom : MonoBehaviour {
 										leftLimit,
 										rightLimit);
 		
+		tempPosition.y = (yTop+yBottom)/2;
+		
 		transform.position = tempPosition;
+	}
+	
+	private void restrictPlayersHorizontal(float halfMaxWidth){
+		Vector3 posC1 = tCharacter1.position;
+		posC1 = new Vector3(Mathf.Clamp(posC1.x,transform.position.x-halfMaxWidth+0.5f,transform.position.x+halfMaxWidth-0.5f),
+							posC1.y,
+							posC1.z);
+		tCharacter1.position = posC1;
+		
+		Vector3 posC2 = tCharacter2.position;
+		posC2 = new Vector3(Mathf.Clamp(posC2.x,transform.position.x-halfMaxWidth+0.5f,transform.position.x+halfMaxWidth-0.5f),
+							posC2.y,
+							posC2.z);
+		tCharacter2.position = posC2;
+	}
+	
+	private void restrictPlayersVertical(){
+		float orthSize = this.camera.orthographicSize;
+		Vector3 posC1 = tCharacter1.position;
+		posC1 = new Vector3(posC1.x,
+							Mathf.Clamp(posC1.y,transform.position.y-orthSize+0.5f,transform.position.y+orthSize-0.5f),
+							posC1.z);
+		tCharacter1.position = posC1;
+		
+		Vector3 posC2 = tCharacter2.position;
+		posC2 = new Vector3(posC2.x,
+							Mathf.Clamp(posC2.y,transform.position.y-orthSize+0.5f,transform.position.y+orthSize-0.5f),
+							posC2.z);
+		tCharacter2.position = posC2;
 	}
 	
 	void calculateScreen(Transform p1, Transform p2)
@@ -77,6 +109,14 @@ public class CameraCustom : MonoBehaviour {
 	    } else {
 	       xLeft = p2.position.x ;
 	       xRight = p1.position.x ;
+	    }
+		
+		if (p1.position.y < p2.position.y){
+	       yBottom = p1.position.y ;
+	       yTop = p2.position.y ;
+	    } else {
+	       yBottom = p2.position.y ;
+	       yTop = p1.position.y ;
 	    }
 	}
 
