@@ -12,22 +12,26 @@ public class PlayerFSM
 		fsmStates = new List<FSMState>();
 		initializeDefStates();
 	}
-	public bool validateNewAction(PlayerActions newAction){
+	public bool validateNewAction(PlayerActions newAction)
+	{
 		
 		FSMState result = getCurrentState();
 		
 		PlayerStates newState = result.validateNewAction(newAction);
 		
-		if(newState.Equals(PlayerStates.NULL)){
+		if(newState.Equals(PlayerStates.NULL))
+		{
 			return false;	
 		}
-		else{
+		else
+		{
 			currentState=newState;
 			return true;	
 		}
 	}
 	
-	public FSMState getCurrentState(){
+	public FSMState getCurrentState()
+	{
 		return fsmStates.Find(
             delegate(FSMState st)
             {
@@ -36,7 +40,8 @@ public class PlayerFSM
         );
 	}
 	
-	public void initializeDefStates(){//should this be hardcoded?
+	public void initializeDefStates()
+	{//should this be hardcoded?
 		FSMState fall = new FSMState(PlayerStates.FALLING);
 		fall.addTransition(PlayerActions.LAND,PlayerStates.STANDING);
 		fsmStates.Add(fall);
