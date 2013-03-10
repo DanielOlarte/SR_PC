@@ -4,19 +4,22 @@ using System.Collections;
 public class Player : MonoBehaviour {
 	
 	public int ID;
-	public float playerSpeed = 3.0f;
-	public float jumpForce = 5.5f;
-	public float jumpXMovPerc = 0.7f;
-	public float runXMovPerc = 1.4f;
+	public float playerSpeed = 3.0f;		//walking speed
+	public float jumpForce = 5.5f;			//jump force used to impulse the player up
+	public float jumpXMovPerc = 0.7f;		//percentage of movility based on walking speed during air time
+	public float runXMovPerc = 1.4f;		//percentage of movility based on walking speed during run
+	public float strength = 7.0f;			//amount of dmg done by the player
+	public float stamina = 0.0f;			//not sure how to do this yet
 	
 	public float tempInputChange = 1.0f;
 	
 	private float speedMultiplier= 1.0f;
 	
-	public int health = 100;
+	public float health = 100;
 	
-	private AnimationSprite animation;
+	private AnimationSprite aniManager;
 	private int jumpCount=0;
+	private bool jumpXApplied = false;
 	private bool inputHandled = true;
 	private bool attacking = false;
 	private bool attackReported = false;
@@ -27,7 +30,7 @@ public class Player : MonoBehaviour {
 	void Start () 
 	{
 		sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManager>();
-		animation= GetComponent<AnimationSprite>();
+		aniManager= GetComponent<AnimationSprite>();
 		fsm = new PlayerFSM();
 	}
 	
@@ -37,13 +40,13 @@ public class Player : MonoBehaviour {
 		if(attacking)
 		{
 			int[] variables = AnimationVars.variables[PlayerStates.ATTACKING];
-			animation.animateSprite(variables[0],variables[1],variables[2],variables[3],variables[4],variables[5]);
+			aniManager.animateSprite(variables[0],variables[1],variables[2],variables[3],variables[4],variables[5]);
 			StartCoroutine("attackCounter");
 		}
 		else
 		{
 			StopCoroutine("attackCounter");
-			fsm.getCurrentState().animateState(animation);
+			fsm.getCurrentState().animateState(aniManager);
 		}
 		changePlayerDirection();
 	}
@@ -58,7 +61,7 @@ public class Player : MonoBehaviour {
 			if(hit.collider.gameObject.tag.Equals("Player"))
 			{
 				int id = hit.collider.gameObject.GetComponent<Player>().ID;
-				sceneManager.reportHit(id);
+				sceneManager.reportHit(id,strength);
 				attackReported = true;
 			}
 		}
@@ -70,20 +73,18 @@ public class Player : MonoBehaviour {
 	
 	void changePlayerDirection()
 	{
+		Vector3 scale =  transform.localScale;
 		//turn left
 		if(tempInputChange*Input.GetAxis("Horizontal")<0.0f)
 		{	
-			Vector3 scale =  transform.localScale;
 			scale.x = -Mathf.Abs(scale.x);	
-			transform.localScale = scale;
 		}
 		//turn right
 		else if(tempInputChange*Input.GetAxis("Horizontal")>0.0f)
 		{
-			Vector3 scale =  transform.localScale;
-			scale.x = Mathf.Abs(scale.x);	
-			transform.localScale = scale;				
-		}
+			scale.x = Mathf.Abs(scale.x);				
+		}	
+		transform.localScale = scale;
 	}
 	
 	void changeState()
@@ -119,12 +120,12 @@ public class Player : MonoBehaviour {
 				fsm.validateNewAction(PlayerActions.RUN_INPUT);
 				speedMultiplier*=runXMovPerc;
 			}
-
 		}
-		//detect fall
+		//detect fall and set speedmultiplier
 		else if(Mathf.RoundToInt(rigidbody.velocity.y)<0)
 		{
 			fsm.validateNewAction(PlayerActions.FALL);
+			speedMultiplier=jumpXMovPerc;
 		}
 		//detect player stoping and reset speed multiplier
 		else if(Mathf.RoundToInt(Input.GetAxis("Horizontal")*10)==0 && 
@@ -137,7 +138,8 @@ public class Player : MonoBehaviour {
 	
 	void FixedUpdate () 
 	{
-		float movementX = Input.GetAxis("Horizontal")*playerSpeed*speedMultiplier*tempInputChange; 	//get input with default keys
+		//get input with default keys
+		float movementX = Input.GetAxis("Horizontal")*playerSpeed*speedMultiplier*tempInputChange; 	
 		//move horizontally		
 		rigidbody.velocity = new Vector3(movementX,rigidbody.velocity.y,rigidbody.velocity.z);
 		//Handle Double jump

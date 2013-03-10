@@ -39,8 +39,10 @@ public class SceneManager : MonoBehaviour {
 	}
 	
 	void OnGUI() {
-        GUI.Label(new Rect(10, 10, 50, 20), playerList[0].GetComponent<Player>().health.ToString());
-		GUI.Label(new Rect(Screen.width-50, 10, 50, 20), playerList[1].GetComponent<Player>().health.ToString());
+        GUI.Label(new Rect(10, 10, 50, 20), "Player 1");
+		GUI.HorizontalScrollbar(new Rect (60,10,200,20), 0, playerList[0].GetComponent<Player>().health,0, 100);
+		GUI.Label(new Rect(Screen.width-50, 10, 50, 20), "Player 2");
+		GUI.HorizontalScrollbar(new Rect (Screen.width-260,10,200,20), 0, playerList[1].GetComponent<Player>().health,0, 100);
     }
 	
 	public List<GameObject> getPlayers()
@@ -48,8 +50,8 @@ public class SceneManager : MonoBehaviour {
 		return playerList;
 	}
 	
-	public void reportHit(int playerID)
+	public void reportHit(int playerHittedID,float hitStrength)
 	{
-		playerList[playerID].GetComponent<Player>().health-=5;
+		playerList[playerHittedID].GetComponent<Player>().health-=hitStrength;
 	}
 }
