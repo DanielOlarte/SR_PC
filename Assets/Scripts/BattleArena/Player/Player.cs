@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
 	
@@ -17,6 +18,7 @@ public class Player : MonoBehaviour {
 	
 	public float health = 100;
 	
+	private InputManager inputManager;
 	private AnimationSprite aniManager;
 	private int jumpCount=0;
 	private bool jumpXApplied = false;
@@ -26,7 +28,7 @@ public class Player : MonoBehaviour {
 	private PlayerFSM fsm;
 	
 	private SceneManager sceneManager;
-		
+	
 	void Start () 
 	{
 		sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManager>();
@@ -75,12 +77,12 @@ public class Player : MonoBehaviour {
 	{
 		Vector3 scale =  transform.localScale;
 		//turn left
-		if(tempInputChange*Input.GetAxis("Horizontal")<0.0f)
+		if(tempInputChange*inputManager.getHorizontalAxis()<0.0f)
 		{	
 			scale.x = -Mathf.Abs(scale.x);	
 		}
 		//turn right
-		else if(tempInputChange*Input.GetAxis("Horizontal")>0.0f)
+		else if(tempInputChange*inputManager.getHorizontalAxis() > 0.0f)
 		{
 			scale.x = Mathf.Abs(scale.x);				
 		}	
@@ -93,12 +95,12 @@ public class Player : MonoBehaviour {
 		{
 			return;
 		}
-		if(Input.GetKeyDown(KeyCode.F))
+		if(inputManager.getKeyDown(PlayerKeys.ATTACK))
 		{
 			attacking = true;
 		}
 		//detect jump, set speed multiplier and tell program we have to handle input
-		if(Input.GetKeyDown(KeyCode.Space))
+		if(inputManager.getKeyDown(PlayerKeys.JUMP))
 		{
 			if(fsm.validateNewAction(PlayerActions.JUMP_INPUT))
 			{
@@ -107,7 +109,7 @@ public class Player : MonoBehaviour {
 			}
 		}  
 		//detect walking and reset speed multiplier
-		else if(Mathf.RoundToInt(Input.GetAxis("Horizontal")*10)!=0 &&
+		else if(Mathf.RoundToInt(inputManager.getHorizontalAxis()*10)!=0 &&
 				Mathf.RoundToInt(rigidbody.velocity.y)==0 && 
 				!fsm.getCurrentState().getID().Equals(PlayerStates.JUMPING))
 		{	
@@ -115,7 +117,7 @@ public class Player : MonoBehaviour {
 			speedMultiplier=1.0f;
 			fsm.validateNewAction(PlayerActions.WALK_INPUT);
 			//detect run and set speed multiplier
-			if(Input.GetKey(KeyCode.LeftShift))
+			if(inputManager.getKey(PlayerKeys.RUN))
 			{
 				fsm.validateNewAction(PlayerActions.RUN_INPUT);
 				speedMultiplier*=runXMovPerc;
@@ -128,7 +130,7 @@ public class Player : MonoBehaviour {
 			speedMultiplier=jumpXMovPerc;
 		}
 		//detect player stoping and reset speed multiplier
-		else if(Mathf.RoundToInt(Input.GetAxis("Horizontal")*10)==0 && 
+		else if(Mathf.RoundToInt(inputManager.getHorizontalAxis()*10)==0 && 
 				!fsm.getCurrentState().getID().Equals(PlayerStates.JUMPING))
 		{
 			fsm.validateNewAction(PlayerActions.STOP);
@@ -139,7 +141,7 @@ public class Player : MonoBehaviour {
 	void FixedUpdate () 
 	{
 		//get input with default keys
-		float movementX = Input.GetAxis("Horizontal")*playerSpeed*speedMultiplier*tempInputChange; 	
+		float movementX = inputManager.getHorizontalAxis()*playerSpeed*speedMultiplier*tempInputChange; 	
 		//move horizontally		
 		rigidbody.velocity = new Vector3(movementX,rigidbody.velocity.y,rigidbody.velocity.z);
 		//Handle Double jump
@@ -171,5 +173,12 @@ public class Player : MonoBehaviour {
 				fsm.validateNewAction(PlayerActions.FALL);
 			}
 		}
+	}
+	
+	public void initializeInputManager(string id, List<KeyCode> keys)
+	{
+		inputManager = GetComponent<InputManager>();
+		inputManager.setController(id);
+		inputManager.setKeys(keys);
 	}
 }
