@@ -10,15 +10,15 @@ public class SceneManager : MonoBehaviour {
 	public Vector3 positionPlayer1 = new Vector3(-2.0f,0.0f,-1.0f);
 	public Vector3 positionPlayer2 = new Vector3(2.0f,0.0f,-1.0f);
 	
-	public string idController1;
-	public string idController2;
+	public string idController1 = "Keyboard1";
+	public string idController2 = "Keyboard2";
 	
 	public List<KeyCode> keysController1 = new List<KeyCode>(){KeyCode.Keypad0, 
 															   KeyCode.Keypad1, 
 															   KeyCode.Keypad2};
 	public List<KeyCode> keysController2 = new List<KeyCode>(){KeyCode.LeftShift, 
 															   KeyCode.Space, 
-															   KeyCode.G};
+															   KeyCode.F};
 	public List<KeyCode> keysControllerGP1 = new List<KeyCode>(){KeyCode.Joystick1Button5, 
 															  	 KeyCode.Joystick1Button0, 
 															   	 KeyCode.Joystick1Button2};
@@ -53,18 +53,18 @@ public class SceneManager : MonoBehaviour {
 		
 		controllersList.Add(idController);
 	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
 		
-	}
-	
 	void OnGUI() {
+		//Health
         GUI.Label(new Rect(10, 10, 50, 20), "Player 1");
 		GUI.HorizontalScrollbar(new Rect (60,10,200,20), 0, playerList[0].GetComponent<Player>().health,0, 100);
 		GUI.Label(new Rect(Screen.width-50, 10, 50, 20), "Player 2");
 		GUI.HorizontalScrollbar(new Rect (Screen.width-260,10,200,20), 0, playerList[1].GetComponent<Player>().health,0, 100);
+		//Stamina
+		GUI.Label(new Rect(10, Screen.height-20, 50, 20), "Stamina");
+		GUI.HorizontalScrollbar(new Rect (60,Screen.height-20,200,20), 0, playerList[0].GetComponent<Player>().stamina,0, 100);
+		GUI.Label(new Rect(Screen.width-50, Screen.height-20, 50, 20), "Stamina");
+		GUI.HorizontalScrollbar(new Rect (Screen.width-260,Screen.height-20,200,20), 0, playerList[1].GetComponent<Player>().stamina,0, 100);
     }
 	
 	public List<GameObject> getPlayers()

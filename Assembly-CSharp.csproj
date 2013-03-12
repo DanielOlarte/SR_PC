@@ -37,15 +37,16 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\BattleArena\CameraCustom.cs" />
      <Compile Include="Assets\Scripts\BattleArena\InputManager.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\ParticleDestroyer.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\AnimationSprite.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\AnimationVars.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\FSMState.cs" />

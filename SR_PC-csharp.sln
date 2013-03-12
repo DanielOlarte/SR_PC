@@ -21,6 +21,9 @@ Global
 =======
 																																			GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> refs/remotes/origin/jsrc1115
+=======
+																																													GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> refs/remotes/origin/jsrc1115
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
