@@ -9,7 +9,7 @@ public class AnimationVars
 	private static int[] walking = {9,8,1,0,8,8};
 	private static int[] running = {9,8,1,2,6,8};
 	private static int[] jumping = {9,8,0,1,6,8};
-	private static int[] attacking = {9,8,0,5,5,8};
+	private static int[] attacking = {9,8,0,5,5,10};
 	
 	public static Dictionary<PlayerStates, int[]> variables = new Dictionary<PlayerStates, int[]>()
 	{
@@ -18,7 +18,10 @@ public class AnimationVars
 	    {PlayerStates.WALKING, walking},
 		{PlayerStates.RUNNING, running},
 		{PlayerStates.JUMPING, jumping},
-	    {PlayerStates.ATTACKING, attacking}
+	    {PlayerStates.SERIOUSLY_FALLING, falling},
+		{PlayerStates.DOUBLE_JUMPING, jumping},
+		{PlayerStates.FALL_JUMP, jumping},
+		{PlayerStates.ATTACKING, attacking}
 	};
 }
 

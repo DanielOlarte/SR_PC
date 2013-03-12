@@ -44,6 +44,7 @@ public class PlayerFSM
 	{//should this be hardcoded?
 		FSMState fall = new FSMState(PlayerStates.FALLING);
 		fall.addTransition(PlayerActions.LAND,PlayerStates.STANDING);
+		fall.addTransition(PlayerActions.JUMP_INPUT,PlayerStates.FALL_JUMP);
 		fsmStates.Add(fall);
 		
 		FSMState stand = new FSMState(PlayerStates.STANDING);
@@ -68,8 +69,21 @@ public class PlayerFSM
 		
 		FSMState jump = new FSMState(PlayerStates.JUMPING);
 		jump.addTransition(PlayerActions.FALL,PlayerStates.FALLING);		
-		jump.addTransition(PlayerActions.JUMP_INPUT,PlayerStates.JUMPING);	
+		jump.addTransition(PlayerActions.JUMP_INPUT,PlayerStates.DOUBLE_JUMPING);	
 		fsmStates.Add(jump);
+		
+		FSMState double_jump = new FSMState(PlayerStates.DOUBLE_JUMPING);
+		double_jump.addTransition(PlayerActions.FALL,PlayerStates.SERIOUSLY_FALLING);		
+		fsmStates.Add(double_jump);
+		
+		FSMState fall_jump = new FSMState(PlayerStates.FALL_JUMP);
+		fall_jump.addTransition(PlayerActions.FALL,PlayerStates.SERIOUSLY_FALLING);			
+		fsmStates.Add(fall_jump);
+		
+		FSMState serious_fall = new FSMState(PlayerStates.SERIOUSLY_FALLING);
+		serious_fall.addTransition(PlayerActions.LAND,PlayerStates.STANDING);			
+		fsmStates.Add(serious_fall);
+		
 	}
 }
 

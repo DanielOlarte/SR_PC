@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\BattleArena\CameraCustom.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\ParticleDestroyer.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\AnimationSprite.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\AnimationVars.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\FSMState.cs" />
