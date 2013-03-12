@@ -10,15 +10,15 @@ public class SceneManager : MonoBehaviour {
 	public Vector3 positionPlayer1 = new Vector3(-2.0f,0.0f,-1.0f);
 	public Vector3 positionPlayer2 = new Vector3(2.0f,0.0f,-1.0f);
 	
-	public string idController1;
-	public string idController2;
+	public string idController1 = "Keyboard1";
+	public string idController2 = "Keyboard2";
 	
 	public List<KeyCode> keysController1 = new List<KeyCode>(){KeyCode.Keypad0, 
 															   KeyCode.Keypad1, 
 															   KeyCode.Keypad2};
 	public List<KeyCode> keysController2 = new List<KeyCode>(){KeyCode.LeftShift, 
 															   KeyCode.Space, 
-															   KeyCode.G};
+															   KeyCode.F};
 	public List<KeyCode> keysControllerGP1 = new List<KeyCode>(){KeyCode.Joystick1Button5, 
 															  	 KeyCode.Joystick1Button0, 
 															   	 KeyCode.Joystick1Button2};

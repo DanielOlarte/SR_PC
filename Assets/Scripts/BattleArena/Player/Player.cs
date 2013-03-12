@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
 	
@@ -25,10 +26,6 @@ public class Player : MonoBehaviour {
 	private AnimationSprite aniManager;		//animation class
 	private bool inputHandled = true;		
 	private InputManager inputManager;
-	private AnimationSprite aniManager;
-	private int jumpCount=0;
-	private bool jumpXApplied = false;
-	private bool inputHandled = true;
 	private bool attacking = false;
 	private bool attackReported = true;
 	private PlayerFSM fsm;
@@ -38,6 +35,7 @@ public class Player : MonoBehaviour {
 		
 	void Start () 
 	{
+		inputManager = GetComponent<InputManager>();
 		sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManager>();
 		aniManager= GetComponent<AnimationSprite>();
 		fsm = new PlayerFSM();
@@ -78,11 +76,7 @@ public class Player : MonoBehaviour {
 				attackReported = true;											//inform self that is not necessary to report again
 				stamina += strength * staminaMultiplier;						//set new stamina value
 				if(stamina>100.0f){stamina=100.0f;}								//set stamina limit
-				Instantiate(bloodPrefab,hit.transform.position,hit.transform.rotation);
-				
-				if(ID==1){
-					print (attacking);
-				}
+				Instantiate(bloodPrefab,hit.transform.position,hit.transform.rotation);				
 			}
 		}
 		//wait time
@@ -123,10 +117,6 @@ public class Player : MonoBehaviour {
 		}
 		if(inputManager.getKeyDown(PlayerKeys.ATTACK))
 		{
-			if(ID==1)
-			{
-				print ("now!");
-			}
 			attacking = true;
 			attackReported = false;
 		}
@@ -161,7 +151,7 @@ public class Player : MonoBehaviour {
 			speedMultiplier=jumpXMovPerc;
 		}
 		//detect player stoping and reset speed multiplier
-		else if(Mathf.RoundToInt(Input.GetAxis("Horizontal")*10)==0 && 
+		else if(Mathf.RoundToInt(inputManager.getHorizontalAxis()*10)==0 && 
 				(!fsm.getCurrentState().getID().Equals(PlayerStates.JUMPING)&&!fsm.getCurrentState().getID().Equals(PlayerStates.FALLING)))
 		{
 			fsm.validateNewAction(PlayerActions.STOP);
@@ -181,7 +171,10 @@ public class Player : MonoBehaviour {
 		{	
 			if( !inputHandled )
 			{					
-				Vector3 pos = new Vector3(transform.position.x,transform.position.y-transform.localScale.y/2,transform.position.z);
+				Vector3 pos = new Vector3(	transform.position.x+rigidbody.velocity.x*Time.fixedDeltaTime,
+											transform.position.y-transform.localScale.y/2,
+											transform.position.z);
+				print (rigidbody.velocity.y);
 				Instantiate(jumpPrefab,pos,transform.rotation);
 				rigidbody.velocity = Vector3.zero;
 				rigidbody.AddForce(new Vector3(0,jumpForce,0),ForceMode.Impulse);
