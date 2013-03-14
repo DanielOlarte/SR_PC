@@ -5,11 +5,11 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{9DB115EB-1206-3BFC-34EB-E7C939C7D8A9}</ProjectGuid>
+	<ProjectGuid>{5A854ED3-65EF-B5FC-105D-E4C5F6FE1EFC}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<AssemblyName>Assembly-UnityScript</AssemblyName>
 	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	<FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -18,7 +18,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_WEBCAM;ENABLE_MICROPHONE;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW;ENABLE_SUBSTANCE</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_ANDROID;ENABLE_GENERICS;ENABLE_TERRAIN;ENABLE_WEBCAM;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -44,22 +44,18 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\BattleArena\Boundary.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\CameraCustom.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\ControllerAndroid.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\InputManager.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\ParticleDestroyer.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\AnimationSprite.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\FSM\AnimationVars.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\FSM\FSMState.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerActions.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerFSM.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerStates.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\Joystick.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\Player.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\RatioFixer.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\SceneManager.cs" />
-     <Compile Include="Assets\Scripts\Start\Logos.cs" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\CameraRelativeControl.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\FirstPersonControl.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\FollowTransform.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\Joystick.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\ObliqueNear.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\PlayerRelativeControl.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\RollABall.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\RotationConstraint.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\SidescrollControl.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\SmoothFollow2D.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\ZoomCamera.js" />
+     <Compile Include="Assets\Standard Assets (Mobile)\Scripts\tapcontrol.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

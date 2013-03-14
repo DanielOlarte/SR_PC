@@ -12,34 +12,34 @@ public class InputManager : MonoBehaviour {
 	private string verticalAxis;
 	public List<KeyCode> listKeys;
 
-	public void setController(string type)
+	virtual public void setController(string type)
 	{
 		idController = type;
 		horizontalAxis = "Horizontal" + idController;
 		verticalAxis = "Vertical" + idController;
 	}
 	
-	public void setKeys(List<KeyCode> list)
+	virtual public void setKeys(List<KeyCode> list)
 	{
 		listKeys = list;
 	}
 	
-	public float getHorizontalAxis()
+	virtual public float getHorizontalAxis()
 	{
 		return Input.GetAxis(horizontalAxis);
 	}
 	
-	public float getVerticallAxis()
+	virtual public float getVerticallAxis()
 	{
 		return Input.GetAxis(verticalAxis);
 	}
 	
-	public bool getKey(PlayerKeys key)
+	virtual public bool getKey(PlayerKeys key)
 	{
 		return Input.GetKey(listKeys[(int)key]);
 	}
 	
-	public bool getKeyDown(PlayerKeys key)
+	virtual public bool getKeyDown(PlayerKeys key)
 	{
 		return Input.GetKeyDown(listKeys[(int)key]);
 	}

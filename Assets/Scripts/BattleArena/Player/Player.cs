@@ -35,7 +35,6 @@ public class Player : MonoBehaviour {
 		
 	void Start () 
 	{
-		inputManager = GetComponent<InputManager>();
 		sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManager>();
 		aniManager= GetComponent<AnimationSprite>();
 		fsm = new PlayerFSM();
@@ -200,7 +199,19 @@ public class Player : MonoBehaviour {
 	
 	public void initializeInputManager(string id, List<KeyCode> keys)
 	{
-		inputManager = GetComponent<InputManager>();
+		switch ( id )
+		{
+			case "Android":
+			{
+				inputManager = GetComponent<ControllerAndroid>();
+				break;
+			}
+			default:
+			{
+				inputManager = GetComponent<InputManager>();
+				break;
+			}
+		}
 		inputManager.setController(id);
 		inputManager.setKeys(keys);
 	}

@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+
 public class SceneManager : MonoBehaviour {
 	
 	private List<string> controllersList;
 	private float levelLenght = 40.0f;
 	public GameObject playerPrefab;
+	public GameObject controllerAndroidPrefab;
 	
 	public Vector3 positionPlayer1 = new Vector3(-2.0f,0.0f,-1.0f);
 	public Vector3 positionPlayer2 = new Vector3(2.0f,0.0f,-1.0f);
@@ -27,6 +29,7 @@ public class SceneManager : MonoBehaviour {
 															   	 KeyCode.Joystick2Button2};
 		
 	private List<GameObject> playerList = new List<GameObject>();
+	private GameObject androidController;
 	
 	public float getLevelLenght()
 	{
@@ -37,9 +40,21 @@ public class SceneManager : MonoBehaviour {
 	void Start () 
 	{
 		controllersList = new List<string>();
+		
+		#if UNITY_ANDROID
+			idController1 = "Android";
+			instantiateControllerAndroid();
+			instantiatePlayer(0, positionPlayer1, 5.0f, idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1, positionPlayer2, 6.0f, idController1, getKeysBasedOnController(idController1) );
+		
+			
+		#endif
+		
+		#if UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
+			instantiatePlayer(0, positionPlayer1, 5.0f, idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1, positionPlayer2, 6.0f, idController2, getKeysBasedOnController(idController2) );	
+		#endif
 
-		instantiatePlayer(0, positionPlayer1, 5.0f, idController1, getKeysBasedOnController(idController1) );	
-		instantiatePlayer(1, positionPlayer2, 6.0f, idController2, getKeysBasedOnController(idController2) );	
 	}
 	
 	private void instantiatePlayer(int ID,Vector3 position, float speed, string idController, List<KeyCode> listKeys)
@@ -52,6 +67,11 @@ public class SceneManager : MonoBehaviour {
 		playerList.Add(player);
 		
 		controllersList.Add(idController);
+	}
+	
+	private void instantiateControllerAndroid()
+	{
+		androidController = (GameObject)Instantiate (controllerAndroidPrefab, new Vector3(0, 0, 0), controllerAndroidPrefab.transform.rotation);
 	}
 		
 	void OnGUI() {
@@ -70,6 +90,11 @@ public class SceneManager : MonoBehaviour {
 	public List<GameObject> getPlayers()
 	{
 		return playerList;
+	}
+	
+	public GameObject getAndroidController()
+	{
+		return androidController;
 	}
 	
 	public void reportHit(int playerHittedID,float hitStrength)
