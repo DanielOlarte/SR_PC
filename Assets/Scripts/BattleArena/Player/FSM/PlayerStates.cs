@@ -1,1 +1,13 @@
-public enum PlayerStates {FALLING,SERIOUSLY_FALLING,STANDING,WALKING,RUNNING,JUMPING,DOUBLE_JUMPING,FALL_JUMP,ATTACKING,NULL}
+public enum PlayerStates {	FALLING,
+							SERIOUSLY_FALLING,
+							STANDING,
+							WALKING,
+							RUNNING,
+							JUMPING,
+							DOUBLE_JUMPING,
+							FALL_JUMP,
+							W_ATTACKING, 
+							R_ATTACKING,
+							J_ATTACKING, 
+							S_ATTACKING, 							
+							NULL}

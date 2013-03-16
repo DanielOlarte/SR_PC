@@ -32,10 +32,9 @@ public class FSMState
 		
 		return PlayerStates.NULL;
 	}
-	public void animateState(AnimationSprite animator)
+	public void animateState(AnimationSprite animator,PlayerCharacter pCharacter)
 	{
-		int[] variables = AnimationVars.variables[ID];
-		animator.animateSprite(variables[0],variables[1],variables[2],variables[3],variables[4],variables[5]);
+		animator.animateSprite(pCharacter,ID);
 	}
 }
 

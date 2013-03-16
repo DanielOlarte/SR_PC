@@ -36,7 +36,7 @@ public class CameraCustom : MonoBehaviour {
 		
 		calculateScreen(tCharacter1, tCharacter2);
 		initialHorizontalDistance = (2*this.camera.orthographicSize*this.camera.aspect) - margin;
-		initialVerticalDistance = this.camera.orthographicSize;
+		initialVerticalDistance = this.camera.orthographicSize+2.0f;
 	}
 	
 	void Update ()
@@ -51,21 +51,22 @@ public class CameraCustom : MonoBehaviour {
 		float 	horizontalDistancePlayers = xRight - xLeft,
 				verticalDistancePlayers = yTop - yBottom;
 		
-		if( horizontalDistancePlayers > initialHorizontalDistance 
+		if( verticalDistancePlayers > initialVerticalDistance 
+			&& 2*(verticalDistancePlayers-2.0f)*this.camera.aspect - margin < maxDistance)
+		{
+			this.camera.orthographicSize = Mathf.Lerp(	this.camera.orthographicSize,
+														verticalDistancePlayers-2.0f,
+														0.1f);
+		}
+		
+		else if( horizontalDistancePlayers > initialHorizontalDistance 
 			&& horizontalDistancePlayers < maxDistance)
 		{ 			// If the distance between players is greater than the initial, 
 					// adjust zoom of the camera.			
-			this.camera.orthographicSize = Mathf.Lerp((horizontalDistancePlayers + margin) / (2*this.camera.aspect),
-														this.camera.orthographicSize,
+			this.camera.orthographicSize = Mathf.Lerp(	this.camera.orthographicSize,
+														(horizontalDistancePlayers + margin) / (2*this.camera.aspect),
 														0.1f);
 	    }
-		if( verticalDistancePlayers > initialVerticalDistance 
-			&& 2*verticalDistancePlayers*this.camera.aspect - margin < maxDistance)
-		{
-			this.camera.orthographicSize = Mathf.Lerp(	verticalDistancePlayers,
-														this.camera.orthographicSize,
-														0.1f);
-		}
 		cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
 		// Center the camera
 		float 	leftLimit = -sceneManager.getLevelLenght()/2+cameraHalfWidth,
@@ -76,7 +77,7 @@ public class CameraCustom : MonoBehaviour {
 										rightLimit);
 		
 		tempPosition.y = Mathf.Clamp(	(yTop+yBottom)/2,
-										float.MinValue,
+										2.0f,
 										yBottom+this.camera.orthographicSize-1.0f);
 		
 		transform.Translate(tempPosition-transform.position);

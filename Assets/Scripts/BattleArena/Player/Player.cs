@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
 	
-	public int ID; 																						      //(needs to be initialized)
+	public PlayerCharacter playerCharacter;
+	public int sceneID;																					      //(needs to be initialized)
 	public float playerSpeed = 3.0f;		//walking speed														(needs to be initialized)
 	public float jumpForce = 5.5f;			//jump force used to impulse the player up							(needs to be initialized)
 	public float jumpXMovPerc = 0.7f;		//percentage of movility based on walking speed during air time		(needs to be initialized)
@@ -27,62 +28,94 @@ public class Player : MonoBehaviour {
 	private bool inputHandled = true;		
 	private InputManager inputManager;
 	private bool attacking = false;
-	private bool attackReported = true;
+	private bool attackReported = false;
 	private PlayerFSM fsm;
 	private float direction = 1.0f;
-	
 	private SceneManager sceneManager;
+	private bool attackAnimationFinished = true;
+	private PlayerStates currentAttackAnimation = PlayerStates.S_ATTACKING;
 		
 	void Start () 
 	{
 		inputManager = GetComponent<InputManager>();
 		sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManager>();
 		aniManager= GetComponent<AnimationSprite>();
-		fsm = new PlayerFSM();
+		fsm = GetComponent<PlayerFSM>();
 	}
 	
 	void Update()
 	{
-		changeState();
-		if(attacking)
+		changeState();															//detect state changes
+		if(attacking)															//if it is attacking
 		{
-			int[] variables = AnimationVars.variables[PlayerStates.ATTACKING];
-			aniManager.animateSprite(variables[0],variables[1],variables[2],variables[3],variables[4],variables[5]);
-			StartCoroutine("attackCounter");
+			if(attackAnimationFinished)											//check if the animation ended
+			{
+				currentAttackAnimation = fsm.getCurrentState().getID();			//if it did set a new state to lock on
+				attackAnimationFinished = false;								//and report it is now animating
+			}
+			aniManager.animateAttack(playerCharacter,currentAttackAnimation);	//animate with the animator class
+			StartCoroutine("attackCounter");									//start the attack coroutine
 		}
-		else
+		else 																	//if not attacking
 		{
-			StopCoroutine("attackCounter");
-			fsm.getCurrentState().animateState(aniManager);
+			StopCoroutine("attackCounter");										//stop coroutine if changing state
+			fsm.getCurrentState().animateState(aniManager,playerCharacter);		//and animate new state
 		}
-		changePlayerDirection();
+		changePlayerDirection();												//detect and change direction
 	}
 	
-	IEnumerator attackCounter() {  
+	private RaycastHit attackRaycast(float yOffset)
+	{
 		//generate a raycast to check if there is someone inside striking distance
-		RaycastHit hit;		
+		RaycastHit 	hit;
 		Vector3 rayDirection = new Vector3(direction,0,0);
-		Vector3 rayPosition = new Vector3(	transform.position.x,
-											transform.position.y,
-											transform.position.z);
+		Vector3 rayPosition = new Vector3(transform.position.x,transform.position.y+yOffset,transform.position.z);
 		Ray ray = new Ray(rayPosition,rayDirection);
-		//i decided the distance is half of the player cube size
-		if(!attackReported && Physics.Raycast(ray,out hit, attackReach))
-		{//if attack not reported and someone within distance
-			if(hit.collider.gameObject.tag.Equals("Player"))
-			{//and if is a player (did 2 if's just to make it more understandable))
-				int id = hit.collider.gameObject.GetComponent<Player>().ID;		//check player id
-				sceneManager.reportHit(id,strength);							//report the hit to the scene manager
-				attackReported = true;											//inform self that is not necessary to report again
-				stamina += strength * staminaMultiplier;						//set new stamina value
-				if(stamina>100.0f){stamina=100.0f;}								//set stamina limit
-				Instantiate(bloodPrefab,hit.transform.position,hit.transform.rotation);				
+		Physics.Raycast(ray,out hit, attackReach);								//check if there is collision within the specified reach
+		return hit;																//return information
+	}
+	
+	private void checkAttack()
+	{
+		float[] offsets = {transform.localScale.y/3,0,-transform.localScale.y/3};  //y positions of the 3 raycast 
+		RaycastHit 	hit;
+		bool found = false;															//initialize found bool
+		for(int i=0;i<3;i++)														//for the 3 rays
+		{
+			if(attackRaycast(offsets[i]).collider!=null)							//if a collision was founf
+			{
+				if(attackRaycast(offsets[i]).collider.gameObject.tag.Equals("Player"))//and it is a player
+				{
+					hit = attackRaycast(offsets[i]);								//asign the information
+					found=true;														//report it was found
+					break;															//break for we dont need more information
+				}
 			}
 		}
-		//wait time
-        yield return new WaitForSeconds(0.5f);
-		//and reset the booleans
-		attackReported = true;
+		if(!attackReported&&found)
+		{//if attack not reported and someone within distance
+			
+			if(hit.collider.gameObject.tag.Equals("Player"))
+			{//and if is a player (did 2 if's just to make it more understandable))
+				int id = hit.collider.gameObject.GetComponent<Player>().sceneID;			//check player id in the scene
+				sceneManager.reportHit(id,strength);										//report the hit to the scene manager
+				
+				attackReported = true;														//inform self that is not necessary to report again
+				
+				stamina += strength * staminaMultiplier;									//set new stamina value
+				if(stamina>100.0f){stamina=100.0f;}											//set stamina limit
+				
+				Instantiate(bloodPrefab,hit.transform.position,hit.transform.rotation);		//particle test		
+			}
+		}
+	}
+	
+	IEnumerator attackCounter() 															//coroutine used as a timer for attack animation
+	{  				
+		checkAttack();																		//check and report attacks
+        yield return new WaitForSeconds(0.6f);												//wait time		
+		attackAnimationFinished = true;														//and reset the booleans
+		attackReported = false;			
         attacking=false;
     }
 	
@@ -92,8 +125,8 @@ public class Player : MonoBehaviour {
 		float lastDirection = direction;
 		//turn left
 		if(tempInputChange*inputManager.getHorizontalAxis()<0.0f)
-		{	direction=-1.0f;
-				
+		{	
+			direction=-1.0f;				
 		}
 		//turn right
 		else if(tempInputChange*inputManager.getHorizontalAxis() > 0.0f)
@@ -105,7 +138,7 @@ public class Player : MonoBehaviour {
 		if(direction!=lastDirection)
 		{
 			attacking=false;
-			attackReported = true;
+			attackReported = false;
 		}	
 	}
 	
@@ -118,15 +151,19 @@ public class Player : MonoBehaviour {
 		if(inputManager.getKeyDown(PlayerKeys.ATTACK))
 		{
 			attacking = true;
-			attackReported = false;
 		}
 		//detect jump, set speed multiplier and tell program we have to handle input
-		if(inputManager.getKeyDown(PlayerKeys.JUMP))
+		else if(inputManager.getKeyDown(PlayerKeys.JUMP))
 		{
 			if(fsm.validateNewAction(PlayerActions.JUMP_INPUT))
 			{
 				inputHandled=false;
 				speedMultiplier*=jumpXMovPerc;
+				//particle test
+				Vector3 pos = new Vector3(	transform.position.x+0.1f,
+											transform.position.y-transform.localScale.y/3.0f,
+											transform.position.z);
+				Instantiate(jumpPrefab,pos,transform.rotation);
 			}
 		}  
 		//detect walking and reset speed multiplier
@@ -164,20 +201,15 @@ public class Player : MonoBehaviour {
 		//get input with default keys
 		float movementX = inputManager.getHorizontalAxis()*playerSpeed*speedMultiplier*tempInputChange; 	
 		//move horizontally		
-		rigidbody.velocity = new Vector3(movementX,rigidbody.velocity.y,rigidbody.velocity.z);
+		rigidbody.MovePosition( new Vector3(transform.position.x+movementX*Time.fixedDeltaTime,transform.position.y,transform.position.z));
 		//Handle Double jump
 		if( fsm.getCurrentState().getID().Equals(PlayerStates.JUMPING) || fsm.getCurrentState().getID().Equals(PlayerStates.DOUBLE_JUMPING) ||
 			fsm.getCurrentState().getID().Equals(PlayerStates.FALL_JUMP))
 		{	
 			if( !inputHandled )
-			{					
-				Vector3 pos = new Vector3(	transform.position.x+rigidbody.velocity.x*Time.fixedDeltaTime,
-											transform.position.y-transform.localScale.y/2,
-											transform.position.z);
-				print (rigidbody.velocity.y);
-				Instantiate(jumpPrefab,pos,transform.rotation);
-				rigidbody.velocity = Vector3.zero;
-				rigidbody.AddForce(new Vector3(0,jumpForce,0),ForceMode.Impulse);
+			{	
+				rigidbody.velocity = new Vector3(rigidbody.velocity.x,0,rigidbody.velocity.z);
+				rigidbody.AddForce(new Vector3(0,jumpForce,0),ForceMode.VelocityChange);
 			}			
 			inputHandled=true;
 		}
@@ -193,7 +225,18 @@ public class Player : MonoBehaviour {
 			}
 			else if(Mathf.CeilToInt( Mathf.Abs(collisionInfo.contacts[0].normal.x))==1)
 			{
+				rigidbody.velocity = new Vector3(0,rigidbody.velocity.y,rigidbody.velocity.z);
 				fsm.validateNewAction(PlayerActions.FALL);
+			}
+		}
+	}
+	void OnCollisionStay(Collision collisionInfo)
+	{
+		if(collisionInfo.gameObject.tag.Equals("Floor"))
+		{
+			if(Mathf.CeilToInt( Mathf.Abs(collisionInfo.contacts[0].normal.x))==1)
+			{
+				rigidbody.velocity = new Vector3(0,rigidbody.velocity.y,rigidbody.velocity.z);
 			}
 		}
 	}
