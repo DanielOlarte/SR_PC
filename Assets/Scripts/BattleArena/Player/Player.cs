@@ -215,4 +215,11 @@ public class Player : MonoBehaviour {
 		inputManager.setController(id);
 		inputManager.setKeys(keys);
 	}
+	
+	#if UNITY_ANDROID
+		public void initializeButtonsAndroid(List<Button> buttons)
+		{
+			inputManager.addButtons(buttons);
+		}
+	#endif
 }

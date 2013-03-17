@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum PlayerKeys {RUN, JUMP, ATTACK}
+public enum PlayerKeys {RUN, JUMP, ATTACK, QUIT}
 
 public class InputManager : MonoBehaviour {
 	
@@ -22,6 +22,10 @@ public class InputManager : MonoBehaviour {
 	virtual public void setKeys(List<KeyCode> list)
 	{
 		listKeys = list;
+	}
+	
+	virtual public void addButtons(List<Button> buttons)
+	{
 	}
 	
 	virtual public float getHorizontalAxis()

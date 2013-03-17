@@ -33,8 +33,24 @@ public class Joystick : MonoBehaviour {
 		gui = GetComponent( typeof(GUITexture) ) as GUITexture;
 		
 		// Store the default rect for the gui, so we can snap back to it
-		defaultRect = gui.pixelInset;	
-	    
+		float x = 100.0f; 
+		float y = 80.0f;
+		float width = 150.0f;
+		float height = 150.0f;
+		
+		float defWidth = 1920.0f; // Optimal resolution
+		float defHeight = 1080.0f;
+
+		float widthScale = Screen.width/defWidth;
+		float heightScale = Screen.height/defHeight;
+		
+		float left = x*widthScale;
+		float right = y*heightScale;
+		
+		//defaultRect = gui.pixelInset;	
+		
+		defaultRect = new Rect(left, right, width*widthScale , height*heightScale );
+		
 	    defaultRect.x += transform.position.x * Screen.width;// + gui.pixelInset.x; // -  Screen.width * 0.5;
 	    defaultRect.y += transform.position.y * Screen.height;// - Screen.height * 0.5;
 	    

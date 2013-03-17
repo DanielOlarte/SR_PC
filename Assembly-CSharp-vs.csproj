@@ -18,7 +18,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_WEBCAM;ENABLE_MICROPHONE;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW;ENABLE_SUBSTANCE</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_ANDROID;ENABLE_GENERICS;ENABLE_TERRAIN;ENABLE_WEBCAM;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -44,10 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\BattleArena\Boundary.cs" />
      <Compile Include="Assets\Scripts\BattleArena\CameraCustom.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\ControllerAndroid.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\InputManager.cs" />
      <Compile Include="Assets\Scripts\BattleArena\ParticleDestroyer.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\AnimationSprite.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\AnimationVars.cs" />
@@ -55,10 +52,18 @@
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerActions.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerFSM.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerStates.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\Joystick.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\Player.cs" />
      <Compile Include="Assets\Scripts\BattleArena\RatioFixer.cs" />
      <Compile Include="Assets\Scripts\BattleArena\SceneManager.cs" />
+     <Compile Include="Assets\Scripts\GUI\CustomGUI.cs" />
+     <Compile Include="Assets\Scripts\GUI\Elements\Button.cs" />
+     <Compile Include="Assets\Scripts\GUI\InGameAndroidGUI.cs" />
+     <Compile Include="Assets\Scripts\GUI\InGameGUI.cs" />
+     <Compile Include="Assets\Scripts\GUI\SizeFixer.cs" />
+     <Compile Include="Assets\Scripts\Input\Boundary.cs" />
+     <Compile Include="Assets\Scripts\Input\ControllerAndroid.cs" />
+     <Compile Include="Assets\Scripts\Input\InputManager.cs" />
+     <Compile Include="Assets\Scripts\Input\Joystick.cs" />
      <Compile Include="Assets\Scripts\Start\Logos.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

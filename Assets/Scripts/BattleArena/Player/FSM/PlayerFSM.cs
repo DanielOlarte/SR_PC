@@ -25,6 +25,10 @@ public class PlayerFSM
 		}
 		else
 		{
+			if ( newState == PlayerStates.DOUBLE_JUMPING )
+			{
+				Debug.Log("dobl");
+			}
 			currentState=newState;
 			return true;	
 		}

@@ -27,7 +27,7 @@ public class SceneManager : MonoBehaviour {
 	public List<KeyCode> keysControllerGP2 = new List<KeyCode>(){KeyCode.Joystick2Button5, 
 															  	 KeyCode.Joystick2Button0, 
 															   	 KeyCode.Joystick2Button2};
-		
+	
 	private List<GameObject> playerList = new List<GameObject>();
 	private GameObject androidController;
 	
@@ -47,7 +47,8 @@ public class SceneManager : MonoBehaviour {
 			instantiatePlayer(0, positionPlayer1, 5.0f, idController1, getKeysBasedOnController(idController1) );	
 			instantiatePlayer(1, positionPlayer2, 6.0f, idController1, getKeysBasedOnController(idController1) );
 		
-			
+			CustomGUI gui = GameObject.Find ("CustomGUI").GetComponent<CustomGUI>();
+			gui.initializeButtonsAndroid();
 		#endif
 		
 		#if UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
