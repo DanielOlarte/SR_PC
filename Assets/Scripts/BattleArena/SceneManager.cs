@@ -15,6 +15,8 @@ public class SceneManager : MonoBehaviour {
 	public string idController1 = "Keyboard1";
 	public string idController2 = "Keyboard2";
 	
+	public AnimationVars variables;
+	
 	public List<KeyCode> keysController1 = new List<KeyCode>(){KeyCode.Keypad0, 
 															   KeyCode.Keypad1, 
 															   KeyCode.Keypad2};
@@ -44,25 +46,28 @@ public class SceneManager : MonoBehaviour {
 		#if UNITY_ANDROID
 			idController1 = "Android";
 			instantiateControllerAndroid();
-			instantiatePlayer(0, positionPlayer1, 5.0f, idController1, getKeysBasedOnController(idController1) );	
-			instantiatePlayer(1, positionPlayer2, 6.0f, idController1, getKeysBasedOnController(idController1) );
+			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1, 5.0f, new Vector3(1.82f,1.0f,1.0f),idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2, 6.0f, new Vector3(1.93f,1.5f,1.0f),idController1, getKeysBasedOnController(idController1) );	
 		
 			CustomGUI gui = GameObject.Find ("CustomGUI").GetComponent<CustomGUI>();
 			gui.initializeButtonsAndroid();
 		#endif
 		
 		#if UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
-			instantiatePlayer(0, positionPlayer1, 5.0f, idController1, getKeysBasedOnController(idController1) );	
-			instantiatePlayer(1, positionPlayer2, 6.0f, idController2, getKeysBasedOnController(idController2) );	
+			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1, 5.0f, new Vector3(1.82f,1.0f,1.0f),idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2, 6.0f, new Vector3(1.93f,1.5f,1.0f),idController2, getKeysBasedOnController(idController2) );		
 		#endif
 
 	}
 	
-	private void instantiatePlayer(int ID,Vector3 position, float speed, string idController, List<KeyCode> listKeys)
+	private void instantiatePlayer(int sceneID,PlayerCharacter playerCharacter,Vector3 position, float speed, Vector3 scale, string idController, List<KeyCode> listKeys)
 	{
 		GameObject player = (GameObject)Instantiate(playerPrefab,position,playerPrefab.transform.rotation);
+		player.renderer.material = variables.characters[playerCharacter].spritesheet;		
+		player.transform.localScale = scale;		
 		Player playerScript = player.GetComponent<Player>();
-		playerScript.ID = ID;
+		playerScript.sceneID = sceneID;
+		playerScript.playerCharacter = playerCharacter;
 		playerScript.playerSpeed = speed;
 		playerScript.initializeInputManager(idController, listKeys);
 		playerList.Add(player);

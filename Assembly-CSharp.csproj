@@ -18,7 +18,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_ANDROID;ENABLE_GENERICS;ENABLE_TERRAIN;ENABLE_WEBCAM;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_WEBCAM;ENABLE_MICROPHONE;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW;ENABLE_SUBSTANCE</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -46,13 +46,17 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\BattleArena\CameraCustom.cs" />
      <Compile Include="Assets\Scripts\BattleArena\ParticleDestroyer.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\AnimationSprite.cs" />
-     <Compile Include="Assets\Scripts\BattleArena\Player\FSM\AnimationVars.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\Player\Animation\AnimationSprite.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\Player\Animation\AnimationVars.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\Player\Animation\PAnimation.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\Player\Animation\PandaAnimation.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\Player\Animation\SuriAnimation.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\FSMState.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerActions.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerFSM.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\FSM\PlayerStates.cs" />
      <Compile Include="Assets\Scripts\BattleArena\Player\Player.cs" />
+     <Compile Include="Assets\Scripts\BattleArena\Player\PlayerCharacters.cs" />
      <Compile Include="Assets\Scripts\BattleArena\RatioFixer.cs" />
      <Compile Include="Assets\Scripts\BattleArena\SceneManager.cs" />
      <Compile Include="Assets\Scripts\GUI\CustomGUI.cs" />

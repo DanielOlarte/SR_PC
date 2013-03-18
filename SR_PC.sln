@@ -17,12 +17,15 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																																				GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																																			GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> refs/remotes/origin/jsrc1115
 =======
 																																												GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> refs/remotes/origin/jsrc1115
+=======
+																																																												GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> refs/remotes/origin/jsrc1115
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
