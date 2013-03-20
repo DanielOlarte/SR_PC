@@ -6,6 +6,7 @@ public class SceneManager : MonoBehaviour {
 	private List<string> controllersList;
 	private float levelLenght = 80.0f;
 	public GameObject playerPrefab;
+	public GameObject controllerAndroidPrefab;
 	
 	public Vector3 positionPlayer1 = new Vector3(-2.0f,0.0f,-1.0f);
 	public Vector3 positionPlayer2 = new Vector3(2.0f,0.0f,-1.0f);
@@ -27,8 +28,9 @@ public class SceneManager : MonoBehaviour {
 	public List<KeyCode> keysControllerGP2 = new List<KeyCode>(){KeyCode.Joystick2Button5, 
 															  	 KeyCode.Joystick2Button0, 
 															   	 KeyCode.Joystick2Button2};
-		
+	
 	private List<GameObject> playerList = new List<GameObject>();
+	private GameObject androidController;
 	
 	public float getLevelLenght()
 	{
@@ -36,22 +38,27 @@ public class SceneManager : MonoBehaviour {
 	}
 	
 	// Use this for initialization
-	void Start() 
+	void Start () 
 	{
 		controllersList = new List<string>();
 		variables = GetComponent<AnimationVars>();
-
-		instantiatePlayer(	0,
-							PlayerCharacter.SURICATTA ,
-							positionPlayer1,
-							idController1, 
-							getKeysBasedOnController(idController1) );	
 		
-		instantiatePlayer(	1,
-							PlayerCharacter.PANDA ,
-							positionPlayer2,
-							idController2, 
-							getKeysBasedOnController(idController2) );	
+		#if UNITY_ANDROID
+			idController1 = "Android";
+			instantiateControllerAndroid();
+		
+			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1,idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2,  idController2, getKeysBasedOnController(idController2) );	
+		
+			CustomGUI gui = GameObject.Find ("CustomGUI").GetComponent<CustomGUI>();
+			gui.initializeButtonsAndroid();
+		#endif
+		
+		#if UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
+			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1,idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2,  idController2, getKeysBasedOnController(idController2) );		
+		#endif
+
 	}
 	
 	private void instantiatePlayer(int sceneID,PlayerCharacter playerCharacter,Vector3 position,string idController, List<KeyCode> listKeys)
@@ -73,6 +80,11 @@ public class SceneManager : MonoBehaviour {
 		
 		controllersList.Add(idController);
 	}
+	
+	private void instantiateControllerAndroid()
+	{
+		androidController = (GameObject)Instantiate (controllerAndroidPrefab, new Vector3(0, 0, 0), controllerAndroidPrefab.transform.rotation);
+	}
 		
 	void OnGUI() {
 		//Health
@@ -90,6 +102,11 @@ public class SceneManager : MonoBehaviour {
 	public List<GameObject> getPlayers()
 	{
 		return playerList;
+	}
+	
+	public GameObject getAndroidController()
+	{
+		return androidController;
 	}
 	
 	public void reportHit(int playerHittedID,float hitStrength)

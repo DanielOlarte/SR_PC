@@ -23,7 +23,19 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																										GlobalSection(MonoDevelopProperties) = preSolution
+=======
+																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
+=======
+																																			GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> refs/remotes/origin/jsrc1115
+=======
+																																												GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> refs/remotes/origin/jsrc1115
+=======
+																																																												GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> refs/remotes/origin/jsrc1115
+>>>>>>> refs/remotes/origin/OscarRPR
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

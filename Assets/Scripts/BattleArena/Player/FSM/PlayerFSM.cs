@@ -49,7 +49,7 @@ public class PlayerFSM : MonoBehaviour
 	{//should this be hardcoded?
 		FSMState fall = new FSMState(PlayerStates.FALLING);
 		fall.addTransition(PlayerActions.LAND,PlayerStates.STANDING);
-		fall.addTransition(PlayerActions.JUMP_INPUT,PlayerStates.FALL_JUMP);			
+		fall.addTransition(PlayerActions.JUMP_INPUT,PlayerStates.FALL_JUMP);
 		fsmStates.Add(fall);
 		
 		FSMState stand = new FSMState(PlayerStates.STANDING);
