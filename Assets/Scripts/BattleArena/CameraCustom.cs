@@ -5,22 +5,20 @@ using System.Collections.Generic;
 
 public class CameraCustom : MonoBehaviour {
 	
-	public float margin = 1.5f; // Speed of zoom out (Higher = slower zoom out)
+	public float margin = 1.5f; 
 	
 	private float initialHorizontalDistance;
 	private float initialVerticalDistance;
-	public float maxDistance = 20.0f;
+	public float maxDistance = 40.0f;
 	
 	private Transform tCharacter1; // Transform player 1
 	private Transform tCharacter2; // Transform player 2
 		
 	private SceneManager sceneManager;
 	
-	private float xLeft; // Coordinate X of left screen
-	private float xRight; // Coordinate X of right screen
-	private float yBottom;
-	private float yTop;
+	private float initialYPos;
 	private Vector2 velocity;
+	private float verticalOrtSize = 0.0f, horizOrtSize = 0.0f;
 	// Use this for initialization
 	void Start () 
 	{
@@ -34,96 +32,69 @@ public class CameraCustom : MonoBehaviour {
 		tCharacter1 = p1.transform;
 		tCharacter2 = p2.transform;
 		
-		calculateScreen(tCharacter1, tCharacter2);
-		initialHorizontalDistance = (2*this.camera.orthographicSize*this.camera.aspect) - margin;
-		initialVerticalDistance = this.camera.orthographicSize+2.0f;
+		initialHorizontalDistance = 2*this.camera.orthographicSize*this.camera.aspect;
+		initialVerticalDistance = 2*this.camera.orthographicSize;
+		initialYPos = transform.position.y;
 	}
 	
 	void Update ()
 	{
+		restrictPlayers2Level();
+		restrictPlayers2Distance();
+		
+		float midX = (tCharacter1.position.x+tCharacter2.position.x)/2;
+		float midY = (tCharacter1.position.y+tCharacter2.position.y)/2;
+		float 	leftLimit = -sceneManager.getLevelLenght()/2+this.camera.orthographicSize*this.camera.aspect,
+				rightLimit = sceneManager.getLevelLenght()/2-this.camera.orthographicSize*this.camera.aspect;
 		Vector3 tempPosition = transform.position;
-		
-		float cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
-		
-		restrictPlayersHorizontal(cameraHalfWidth);
-		
-		calculateScreen (tCharacter1, tCharacter2);
-		float 	horizontalDistancePlayers = xRight - xLeft,
-				verticalDistancePlayers = yTop - yBottom;
-		
-		if( verticalDistancePlayers > initialVerticalDistance 
-			&& 2*(verticalDistancePlayers-2.0f)*this.camera.aspect - margin < maxDistance)
-		{
-			this.camera.orthographicSize = Mathf.Lerp(	this.camera.orthographicSize,
-														verticalDistancePlayers-2.0f,
-														0.1f);
-		}
-		
-		else if( horizontalDistancePlayers > initialHorizontalDistance 
-			&& horizontalDistancePlayers < maxDistance)
-		{ 			// If the distance between players is greater than the initial, 
-					// adjust zoom of the camera.			
-			this.camera.orthographicSize = Mathf.Lerp(	this.camera.orthographicSize,
-														(horizontalDistancePlayers + margin) / (2*this.camera.aspect),
-														0.1f);
-	    }
-		cameraHalfWidth = Camera.main.orthographicSize*Camera.main.aspect;
-		// Center the camera
-		float 	leftLimit = -sceneManager.getLevelLenght()/2+cameraHalfWidth,
-				rightLimit = sceneManager.getLevelLenght()/2-cameraHalfWidth;
-						
-		tempPosition.x = Mathf.Clamp(	(xRight + xLeft)/2,
+		tempPosition.x = Mathf.Clamp(	midX,
 										leftLimit,
 										rightLimit);
+		tempPosition.y = Mathf.Clamp(	midY,
+										initialYPos,
+										2*this.camera.orthographicSize);
 		
-		tempPosition.y = Mathf.Clamp(	(yTop+yBottom)/2,
-										2.0f,
-										yBottom+this.camera.orthographicSize-1.0f);
-		
+		float playerHDistance = Mathf.Abs(tCharacter1.position.x-tCharacter2.position.x)+margin;
+		float playerVDistance = Mathf.Abs(tCharacter1.position.y-tCharacter2.position.y)+margin;		
+		if(playerHDistance>initialHorizontalDistance)
+		{
+			horizOrtSize = playerHDistance/(2*this.camera.aspect);
+		}
+		if(playerVDistance > initialVerticalDistance 
+			&& (playerVDistance)*this.camera.aspect < maxDistance)
+		{
+			verticalOrtSize = playerVDistance/2;
+		}
+		if(verticalOrtSize>horizOrtSize)
+		{
+			this.camera.orthographicSize = verticalOrtSize;
+		}
+		else if(verticalOrtSize<horizOrtSize){
+			this.camera.orthographicSize = horizOrtSize;
+		}
 		transform.Translate(tempPosition-transform.position);
-		
 	}
 	
-	private void restrictPlayersHorizontal(float halfMaxWidth)
+	private void restrictPlayers2Distance()
 	{
 		Vector3 posC1 = tCharacter1.position;
-		posC1 = new Vector3(Mathf.Clamp(posC1.x,transform.position.x-halfMaxWidth+0.5f,transform.position.x+halfMaxWidth-0.5f),
-							posC1.y,
-							posC1.z);
+		posC1.x = Mathf.Clamp(posC1.x,transform.position.x-maxDistance/2,transform.position.x+maxDistance/2);
 		tCharacter1.position = posC1;
 		
 		Vector3 posC2 = tCharacter2.position;
-		posC2 = new Vector3(Mathf.Clamp(posC2.x,transform.position.x-halfMaxWidth+0.5f,transform.position.x+halfMaxWidth-0.5f),
-							posC2.y,
-							posC2.z);
+		posC2.x = Mathf.Clamp(posC2.x,transform.position.x-maxDistance/2,transform.position.x+maxDistance/2);
 		tCharacter2.position = posC2;
 	}
 	
-	void calculateScreen(Transform p1, Transform p2)
+	private void restrictPlayers2Level()
 	{
-		 // Calculates the xLeft and xRight screen coordinates based on
-		 // position of the left and right player and the margin.
+		float levelLength = sceneManager.getLevelLenght();
+		Vector3 posC1 = tCharacter1.position;
+		posC1.x = Mathf.Clamp(posC1.x,-levelLength/2,levelLength/2);
+		tCharacter1.position = posC1;
 		
-	    if (p1.position.x < p2.position.x)
-		{
-	       xLeft = p1.position.x ;
-	       xRight = p2.position.x ;
-	    } else 
-		{
-	       xLeft = p2.position.x ;
-	       xRight = p1.position.x ;
-	    }
-		
-		if (p1.position.y < p2.position.y)
-		{
-	       yBottom = p1.position.y ;
-	       yTop = p2.position.y ;
-	    } else 
-		{
-	       yBottom = p2.position.y ;
-	       yTop = p1.position.y ;
-	    }
+		Vector3 posC2 = tCharacter2.position;
+		posC2.x = Mathf.Clamp(posC2.x,-levelLength/2,levelLength/2);
+		tCharacter2.position = posC2;
 	}
-
-	
 }
