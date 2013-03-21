@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum PlayerKeys {RUN, JUMP, ATTACK, QUIT}
+public enum PlayerKeys {RUN, JUMP, ATTACK, SPECIAL_ATTACK, QUIT}
 
 public class InputManager : MonoBehaviour {
 	

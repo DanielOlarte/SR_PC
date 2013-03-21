@@ -1,7 +1,10 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class SceneManager : MonoBehaviour {
+	
+	public const int MAX_WINNER_ROUNDS = 2;
 	
 	private List<string> controllersList;
 	private float levelLenght = 80.0f;
@@ -18,10 +21,12 @@ public class SceneManager : MonoBehaviour {
 	
 	public List<KeyCode> keysController1 = new List<KeyCode>(){KeyCode.Keypad0, 
 															   KeyCode.Keypad1, 
-															   KeyCode.Keypad2};
+															   KeyCode.Keypad2,
+															   KeyCode.Keypad3};
 	public List<KeyCode> keysController2 = new List<KeyCode>(){KeyCode.LeftShift, 
 															   KeyCode.Space, 
-															   KeyCode.F};
+															   KeyCode.F,
+															   KeyCode.E};
 	public List<KeyCode> keysControllerGP1 = new List<KeyCode>(){KeyCode.Joystick1Button5, 
 															  	 KeyCode.Joystick1Button0, 
 															   	 KeyCode.Joystick1Button2};
@@ -31,6 +36,10 @@ public class SceneManager : MonoBehaviour {
 	
 	private List<GameObject> playerList = new List<GameObject>();
 	private GameObject androidController;
+	
+	private string winnerFight, winnerRound;
+	private static int roundWinCharacter1 = 0;
+	private static int roundWinCharacter2 = 0;
 	
 	public float getLevelLenght()
 	{
@@ -48,7 +57,7 @@ public class SceneManager : MonoBehaviour {
 			instantiateControllerAndroid();
 		
 			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1,idController1, getKeysBasedOnController(idController1) );	
-			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2,  idController2, getKeysBasedOnController(idController2) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2, idController1, getKeysBasedOnController(idController1) );	
 		
 			CustomGUI gui = GameObject.Find ("CustomGUI").GetComponent<CustomGUI>();
 			gui.initializeButtonsAndroid();
@@ -58,8 +67,40 @@ public class SceneManager : MonoBehaviour {
 			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1,idController1, getKeysBasedOnController(idController1) );	
 			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2,  idController2, getKeysBasedOnController(idController2) );		
 		#endif
-
+		
+		winnerFight = "No Winner Yet";
+		winnerRound = "No Winner Yet";
 	}
+	
+	void Update()
+	{
+		checkEndRound();
+	}
+	
+	void OnGUI() {
+		//Health
+        GUI.Label(new Rect(10, 10, 50, 20), "Player 1");
+		GUI.HorizontalScrollbar(new Rect (60,10,200,20), 0, playerList[0].GetComponent<Player>().health,0, 100);
+		GUI.Label(new Rect(Screen.width-50, 10, 50, 20), "Player 2");
+		GUI.HorizontalScrollbar(new Rect (Screen.width-260,10,200,20), 0, playerList[1].GetComponent<Player>().health,0, 100);
+		//Stamina
+		GUI.Label(new Rect(10, Screen.height-20, 50, 20), "Stamina");
+		GUI.HorizontalScrollbar(new Rect (60,Screen.height-20,200,20), 0, playerList[0].GetComponent<Player>().stamina,0, 100);
+		GUI.Label(new Rect(Screen.width-50, Screen.height-20, 50, 20), "Stamina");
+		GUI.HorizontalScrollbar(new Rect (Screen.width-260,Screen.height-20,200,20), 0, playerList[1].GetComponent<Player>().stamina,0, 100);
+		// Rounds
+		GUI.Label (new Rect(300, 10, 50, 20), roundWinCharacter1.ToString());
+		GUI.Label(new Rect(Screen.width-300, 10, 50, 20), roundWinCharacter2.ToString());
+		// Winner
+		if ( winnerFight != "No Winner Yet")
+		{
+			GUI.Label ( new Rect(350, 200, 50, 20), winnerFight);
+		}
+		if ( winnerRound != "No Winner Yet")
+		{
+			GUI.Label ( new Rect(350, 200, 50, 20), winnerRound);
+		}
+    }
 	
 	private void instantiatePlayer(int sceneID,PlayerCharacter playerCharacter,Vector3 position,string idController, List<KeyCode> listKeys)
 	{
@@ -85,19 +126,6 @@ public class SceneManager : MonoBehaviour {
 	{
 		androidController = (GameObject)Instantiate (controllerAndroidPrefab, new Vector3(0, 0, 0), controllerAndroidPrefab.transform.rotation);
 	}
-		
-	void OnGUI() {
-		//Health
-        GUI.Label(new Rect(10, 10, 50, 20), "Player 1");
-		GUI.HorizontalScrollbar(new Rect (60,10,200,20), 0, playerList[0].GetComponent<Player>().health,0, 100);
-		GUI.Label(new Rect(Screen.width-50, 10, 50, 20), "Player 2");
-		GUI.HorizontalScrollbar(new Rect (Screen.width-260,10,200,20), 0, playerList[1].GetComponent<Player>().health,0, 100);
-		//Stamina
-		GUI.Label(new Rect(10, Screen.height-20, 50, 20), "Stamina");
-		GUI.HorizontalScrollbar(new Rect (60,Screen.height-20,200,20), 0, playerList[0].GetComponent<Player>().stamina,0, 100);
-		GUI.Label(new Rect(Screen.width-50, Screen.height-20, 50, 20), "Stamina");
-		GUI.HorizontalScrollbar(new Rect (Screen.width-260,Screen.height-20,200,20), 0, playerList[1].GetComponent<Player>().stamina,0, 100);
-    }
 	
 	public List<GameObject> getPlayers()
 	{
@@ -137,5 +165,60 @@ public class SceneManager : MonoBehaviour {
 		}
 		
 		return new List<KeyCode>();
+	}
+
+	private void checkEndRound()
+	{
+		if ( winnerRound == "No Winner Yet" )
+		{
+			if ( playerList[0].GetComponent<Player>().health <= 0.0f )
+			{
+				roundWinCharacter2 += 1;
+				winnerRound = "Player2";
+				if ( roundWinCharacter2 == MAX_WINNER_ROUNDS)
+				{
+					winnerFight = "Player2";
+				}
+			}
+			else if ( playerList[1].GetComponent<Player>().health <= 0.0f )
+			{
+				roundWinCharacter1 += 1;
+				winnerRound = "Player1";
+				if ( roundWinCharacter1 == MAX_WINNER_ROUNDS)
+				{
+					winnerFight = "Player1";
+				}
+			}
+		}
+		
+		if ( winnerFight != "No Winner Yet" ) 
+		{
+			StartCoroutine( startWait(4.0f, "Fight") );
+			playerList[0].GetComponent<Player>().enabled = false;
+			playerList[1].GetComponent<Player>().enabled = false;
+		}
+		else if ( winnerRound != "No Winner Yet" ) 
+		{
+			StartCoroutine( startWait(2.0f, "Round") );
+			playerList[0].GetComponent<Player>().enabled = false;
+			playerList[1].GetComponent<Player>().enabled = false;
+		}
+	}
+	
+	private IEnumerator startWait(float seconds, string winnerState)
+	{
+		yield return StartCoroutine( waitSeconds(seconds) );
+		
+		if ( winnerState == "Fight" )
+		{
+			roundWinCharacter1 = 0;
+			roundWinCharacter2 = 0;
+		}
+	}
+	
+	private IEnumerator waitSeconds(float seconds)
+	{
+		yield return new WaitForSeconds(seconds);
+		Application.LoadLevel(Application.loadedLevelName);
 	}
 }

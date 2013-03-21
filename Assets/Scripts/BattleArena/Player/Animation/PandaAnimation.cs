@@ -17,11 +17,11 @@ public class PandaAnimation : PAnimation
 	
 	public PandaAnimation(Material spriteMaterial):base(spriteMaterial)
 	{
-		strength = 7.0f;
+		strength = 12.0f;
 		jumpXMovPerc = 0.8f;
 		runXMovPerc = 1.5f;
 		attackReach = 1.5f;
-		playerSpeed = 12.0f;
+		playerSpeed = 10.0f;
 		jumpForce = 11.0f;
 		playerScale = new Vector3(3.8f,3.0f,1.0f);
 		variables.Add(PlayerStates.FALLING, falling);

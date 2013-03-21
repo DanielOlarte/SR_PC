@@ -97,7 +97,7 @@ public class Player : MonoBehaviour {
 			attacking = true;
 			playerAttack.setActiveAttack(AttackTypes.NORMAL_ATTACK);
 		}
-		else if(Input.GetKeyDown(KeyCode.E))
+		else if(inputManager.getKeyDown(PlayerKeys.SPECIAL_ATTACK))
 		{
 			attacking = true;
 			playerAttack.setActiveAttack(AttackTypes.SPECIAL_ATTACK);

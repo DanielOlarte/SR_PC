@@ -35,12 +35,12 @@ public class ControllerAndroid : InputManager
 		
 		if (deltaAcceleration.sqrMagnitude >= shakeDetectionThreshold)
 		{
-			listButtons[(int)PlayerKeys.ATTACK - 1].setIsPressed(true);
+			listButtons[(int)PlayerKeys.SPECIAL_ATTACK - 1].setIsPressed(true);
 			Debug.Log("Shake event detected at time "+Time.time);
 		}
 		else
 		{
-			listButtons[(int)PlayerKeys.ATTACK - 1].setIsPressed(false);
+			listButtons[(int)PlayerKeys.SPECIAL_ATTACK - 1].setIsPressed(false);
 		}
 	}
 	
@@ -94,6 +94,11 @@ public class ControllerAndroid : InputManager
 		}
 		
 		if ( key == PlayerKeys.ATTACK )
+		{
+			return listButtons[((int)key) - 1].wasPressed();
+		}
+		
+		if ( key == PlayerKeys.SPECIAL_ATTACK )
 		{
 			return listButtons[((int)key) - 1].wasPressed();
 		}
