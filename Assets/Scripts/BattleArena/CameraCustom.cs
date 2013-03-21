@@ -88,7 +88,7 @@ public class CameraCustom : MonoBehaviour {
 	
 	private void restrictPlayers2Level()
 	{
-		float levelLength = sceneManager.getLevelLenght();
+		float levelLength = sceneManager.getLevelLenght() - margin;
 		Vector3 posC1 = tCharacter1.position;
 		posC1.x = Mathf.Clamp(posC1.x,-levelLength/2,levelLength/2);
 		tCharacter1.position = posC1;
