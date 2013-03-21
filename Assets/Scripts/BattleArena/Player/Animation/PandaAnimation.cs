@@ -14,8 +14,16 @@ public class PandaAnimation : PAnimation
 	private int[] j_attacking = {9,8,0,5,6,10};
 	private int[] s_attacking = {9,8,0,3,6,10};
 	
+	
 	public PandaAnimation(Material spriteMaterial):base(spriteMaterial)
 	{
+		strength = 7.0f;
+		jumpXMovPerc = 0.8f;
+		runXMovPerc = 1.5f;
+		attackReach = 1.5f;
+		playerSpeed = 12.0f;
+		jumpForce = 11.0f;
+		playerScale = new Vector3(3.8f,3.0f,1.0f);
 		variables.Add(PlayerStates.FALLING, falling);
 		variables.Add(PlayerStates.STANDING, standing);
 		variables.Add(PlayerStates.WALKING, walking);

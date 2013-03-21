@@ -6,7 +6,6 @@ public class PlayerFSM : MonoBehaviour
 {
 	private List<FSMState> fsmStates;
 	private PlayerStates currentState = PlayerStates.FALLING;
-	private PlayerStates lastState = PlayerStates.FALLING;
 	
 	public PlayerFSM ()
 	{
@@ -18,9 +17,7 @@ public class PlayerFSM : MonoBehaviour
 	{				
 		FSMState current = getCurrentState();
 		
-		
 		PlayerStates newState = current.validateNewAction(newAction);
-		
 		
 		if(newState.Equals(PlayerStates.NULL))
 		{
@@ -28,10 +25,14 @@ public class PlayerFSM : MonoBehaviour
 		}
 		else
 		{
-			lastState = currentState;
 			currentState=newState;
 			return true;	
 		}
+	}
+	
+	public void setCurrentState(PlayerStates newState)
+	{
+		currentState=newState;
 	}
 	
 	public FSMState getCurrentState()

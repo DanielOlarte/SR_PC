@@ -1,11 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-
 public class SceneManager : MonoBehaviour {
 	
 	private List<string> controllersList;
-	private float levelLenght = 40.0f;
+	private float levelLenght = 80.0f;
 	public GameObject playerPrefab;
 	public GameObject controllerAndroidPrefab;
 	
@@ -42,33 +41,40 @@ public class SceneManager : MonoBehaviour {
 	void Start () 
 	{
 		controllersList = new List<string>();
+		variables = GetComponent<AnimationVars>();
 		
 		#if UNITY_ANDROID
 			idController1 = "Android";
 			instantiateControllerAndroid();
-			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1, 5.0f, new Vector3(1.82f,1.0f,1.0f),idController1, getKeysBasedOnController(idController1) );	
-			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2, 6.0f, new Vector3(1.93f,1.5f,1.0f),idController1, getKeysBasedOnController(idController1) );	
+		
+			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1,idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2,  idController2, getKeysBasedOnController(idController2) );	
 		
 			CustomGUI gui = GameObject.Find ("CustomGUI").GetComponent<CustomGUI>();
 			gui.initializeButtonsAndroid();
 		#endif
 		
 		#if UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
-			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1, 5.0f, new Vector3(1.82f,1.0f,1.0f),idController1, getKeysBasedOnController(idController1) );	
-			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2, 6.0f, new Vector3(1.93f,1.5f,1.0f),idController2, getKeysBasedOnController(idController2) );		
+			instantiatePlayer(0,PlayerCharacter.SURICATTA , positionPlayer1,idController1, getKeysBasedOnController(idController1) );	
+			instantiatePlayer(1,PlayerCharacter.PANDA , positionPlayer2,  idController2, getKeysBasedOnController(idController2) );		
 		#endif
 
 	}
 	
-	private void instantiatePlayer(int sceneID,PlayerCharacter playerCharacter,Vector3 position, float speed, Vector3 scale, string idController, List<KeyCode> listKeys)
+	private void instantiatePlayer(int sceneID,PlayerCharacter playerCharacter,Vector3 position,string idController, List<KeyCode> listKeys)
 	{
 		GameObject player = (GameObject)Instantiate(playerPrefab,position,playerPrefab.transform.rotation);
 		player.renderer.material = variables.characters[playerCharacter].spritesheet;		
-		player.transform.localScale = scale;		
+		player.transform.localScale = variables.characters[playerCharacter].playerScale;		
 		Player playerScript = player.GetComponent<Player>();
 		playerScript.sceneID = sceneID;
+		playerScript.strength = variables.characters[playerCharacter].strength;
+		playerScript.jumpXMovPerc = variables.characters[playerCharacter].jumpXMovPerc;
+		playerScript.runXMovPerc = variables.characters[playerCharacter].runXMovPerc;
 		playerScript.playerCharacter = playerCharacter;
-		playerScript.playerSpeed = speed;
+		playerScript.attackReach=variables.characters[playerCharacter].attackReach;
+		playerScript.playerSpeed = variables.characters[playerCharacter].playerSpeed;
+		playerScript.jumpForce=variables.characters[playerCharacter].jumpForce;
 		playerScript.initializeInputManager(idController, listKeys);
 		playerList.Add(player);
 		

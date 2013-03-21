@@ -13,6 +13,15 @@ public class PAnimation {
 	private int[] j_attacking;
 	private int[] s_attacking;
 	
+	public float strength;
+	public float jumpXMovPerc;
+	public float runXMovPerc;
+	public float playerCharacter;
+	public float attackReach;
+	public float playerSpeed;
+	public float jumpForce;
+	public Vector3 playerScale;
+	
 	public Dictionary<PlayerStates, int[]> variables = new Dictionary<PlayerStates, int[]>();
 	
 	public Material spritesheet;
